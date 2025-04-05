@@ -1,0 +1,1 @@
+const String API_BASE_URL = 'http://localhost:8001'; // Remplacez par votre URL backend
