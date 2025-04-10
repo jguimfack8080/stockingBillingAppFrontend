@@ -73,35 +73,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-              CustomTextField(
+              TextField(
+                key: const Key('emailField'),
                 controller: _emailController,
-                label: 'Email',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre email';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Email invalide';
-                  }
-                  return null;
-                },
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.emailAddress,
               ),
 
               const SizedBox(height: 16),
 
-              CustomTextField(
+              TextField(
+                key: const Key('passwordField'),
                 controller: _passwordController,
-                label: 'Mot de passe',
+                decoration: const InputDecoration(
+                  labelText: 'Mot de passe',
+                  border: OutlineInputBorder(),
+                ),
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer votre mot de passe';
-                  }
-                  if (value.length < 6) {
-                    return 'Le mot de passe doit avoir au moins 6 caractères';
-                  }
-                  return null;
-                },
               ),
 
               const SizedBox(height: 24),
@@ -109,6 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _isSubmitting
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
+                      key: const Key('loginButton'),
                       onPressed: _submit,
                       child: const Text('Se connecter'),
                     ),

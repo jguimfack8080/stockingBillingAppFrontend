@@ -70,6 +70,72 @@ class _UserListScreenState extends State<UserListScreen> {
     }
   }
 
+  Future<void> _handleDeactivateUser(User user) async {
+    final userService = Provider.of<UserService>(context, listen: false);
+    
+    if (user.id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erreur: ID utilisateur manquant')),
+      );
+      return;
+    }
+    
+    if (!user.isActive) {
+      // Réactiver l'utilisateur
+      try {
+        await userService.reactivateUser(user.id!);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Utilisateur réactivé avec succès')),
+        );
+        _loadUsers();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de la réactivation: $e')),
+        );
+      }
+    } else {
+      // Désactiver l'utilisateur
+      final TextEditingController reasonController = TextEditingController();
+      final reason = await showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Désactiver l\'utilisateur'),
+          content: TextField(
+            controller: reasonController,
+            decoration: const InputDecoration(
+              labelText: 'Raison de la désactivation',
+              hintText: 'Entrez la raison de la désactivation',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, reasonController.text),
+              child: const Text('Confirmer'),
+            ),
+          ],
+        ),
+      );
+
+      if (reason != null && reason.isNotEmpty) {
+        try {
+          await userService.deactivateUser(user.id!, reason);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Utilisateur désactivé avec succès')),
+          );
+          _loadUsers();
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erreur lors de la désactivation: $e')),
+          );
+        }
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,9 +215,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                           : Colors.red.shade100,
                                       child: Icon(
                                         user.isActive ? Icons.person : Icons.person_off,
-                                        color: user.isActive 
-                                            ? Colors.green.shade700 
-                                            : Colors.red.shade700,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     title: Row(
@@ -229,6 +293,17 @@ class _UserListScreenState extends State<UserListScreen> {
                                             ),
                                           ],
                                         ),
+                                        if (!user.isActive && user.deactivationReason != null)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4),
+                                            child: Text(
+                                              'Raison: ${user.deactivationReason}',
+                                              style: const TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
                                       ],
                                     ),
                                     trailing: Row(
@@ -236,21 +311,15 @@ class _UserListScreenState extends State<UserListScreen> {
                                       children: [
                                         IconButton(
                                           icon: const Icon(Icons.edit),
-                                          color: user.isActive 
-                                              ? Colors.blue 
-                                              : Colors.grey,
-                                          onPressed: user.isActive ? () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => EditUserScreen(user: user),
-                                              ),
-                                            ).then((updated) {
-                                              if (updated == true) {
-                                                _loadUsers();
-                                              }
-                                            });
-                                          } : null,
+                                          onPressed: user.isActive
+                                              ? () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => EditUserScreen(user: user),
+                                                    ),
+                                                  )
+                                              : null,
+                                          color: user.isActive ? null : Colors.grey,
                                         ),
                                         IconButton(
                                           icon: Icon(
@@ -261,22 +330,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                                 ? Colors.red 
                                                 : Colors.green,
                                           ),
-                                          onPressed: () {
-                                            if (user.isActive) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => DeactivateUserScreen(user: user),
-                                                ),
-                                              ).then((deactivated) {
-                                                if (deactivated == true) {
-                                                  _loadUsers();
-                                                }
-                                              });
-                                            } else {
-                                              // TODO: Implémenter la réactivation d'utilisateur
-                                            }
-                                          },
+                                          onPressed: () => _handleDeactivateUser(user),
                                         ),
                                       ],
                                     ),

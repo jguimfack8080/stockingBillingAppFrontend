@@ -1,16 +1,16 @@
 class UserDeactivation {
   final String reason;
-  final bool isActive;
+  final bool isDeactivating;
 
   UserDeactivation({
     required this.reason,
-    this.isActive = false,
+    this.isDeactivating = true,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'reason': reason,
-      'is_active': isActive,
+      'is_deactivating': isDeactivating,
     };
   }
 } 

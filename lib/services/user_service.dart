@@ -145,21 +145,40 @@ class UserService {
   Future<void> deactivateUser(int userId, String reason) async {
     final token = _authService.token;
     if (token == null) {
-      throw Exception('Token d\'authentification manquant');
+      throw Exception('Token non disponible');
     }
 
-    final deactivation = UserDeactivation(reason: reason);
     final response = await http.put(
       Uri.parse('$API_BASE_URL/users/deactivate/$userId'),
       headers: {
-        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(deactivation.toJson()),
+      body: jsonEncode(UserDeactivation(reason: reason).toJson()),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Erreur lors de la désactivation de l\'utilisateur: ${response.body}');
+      throw Exception('Erreur lors de la désactivation de l\'utilisateur: ${response.statusCode} ${response.body}');
+    }
+  }
+
+  Future<void> reactivateUser(int userId) async {
+    final token = _authService.token;
+    if (token == null) {
+      throw Exception('Token non disponible');
+    }
+
+    final response = await http.put(
+      Uri.parse('$API_BASE_URL/users/deactivate/$userId'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(UserDeactivation(reason: 'Réactivation', isDeactivating: false).toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Erreur lors de la réactivation de l\'utilisateur: ${response.statusCode} ${response.body}');
     }
   }
 }

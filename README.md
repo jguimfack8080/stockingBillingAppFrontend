@@ -16,16 +16,20 @@ Cette application permet de gérer efficacement les stocks et la facturation. El
 
 ### Gestion des Utilisateurs (Admin)
 - Création de nouveaux utilisateurs
-- Visualisation de la liste des utilisateurs
+- Visualisation de la liste des utilisateurs avec statut visuel
 - Modification des informations utilisateur
-- Désactivation/Activation des comptes
+- Désactivation/Activation des comptes avec raison
 - Gestion des rôles et permissions
+- Interface utilisateur intuitive avec indicateurs visuels
 
 ### Interface Utilisateur
 - Design moderne et intuitif
 - Thème sombre/clair
 - Navigation fluide entre les écrans
 - Indicateurs visuels pour les statuts utilisateur
+  - Badges colorés pour les statuts (Actif/Inactif)
+  - Icônes spécifiques pour les rôles
+  - Affichage des raisons de désactivation
 - Gestion des erreurs et feedback utilisateur
 
 ## Prérequis
@@ -38,7 +42,7 @@ Cette application permet de gérer efficacement les stocks et la facturation. El
 
 1. Clonez le dépôt :
 ```bash
-git clone [URL_DU_REPO]
+git clone https://github.com/jguimfack8080/stockingBillingAppFrontend
 ```
 
 2. Installez les dépendances :
@@ -115,7 +119,7 @@ lib/
 - GET `/users/` : Liste des utilisateurs
 - POST `/users/` : Création d'utilisateur
 - PUT `/users/{id}` : Mise à jour d'utilisateur
-- PUT `/users/deactivate/{id}` : Désactivation d'utilisateur
+- PUT `/users/deactivate/{id}` : Désactivation/Réactivation d'utilisateur
 
 ## Sécurité
 
@@ -154,4 +158,4 @@ Ce projet est sous licence MIT.
 
 ## Contact
 
-Pour toute question ou suggestion, n'hésitez pas à [CONTACT].
+Pour toute question ou suggestion, n'hésitez pas.

@@ -9,6 +9,7 @@ class User {
   final DateTime birthDate;
   final bool isActive;
   final DateTime createdAt;
+  final String? deactivationReason;
 
   User({
     this.id,
@@ -21,6 +22,7 @@ class User {
     required this.birthDate,
     required this.isActive,
     required this.createdAt,
+    this.deactivationReason,
   });
 
 factory User.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,7 @@ factory User.fromJson(Map<String, dynamic> json) {
     birthDate: DateTime.parse(json['birth_date']),
     isActive: json['is_active'] ?? true,
     createdAt: DateTime.parse(json['created_at']),
+    deactivationReason: json['deactivation_reason'],
   );
 }
 
