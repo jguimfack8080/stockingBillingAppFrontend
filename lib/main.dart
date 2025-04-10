@@ -13,6 +13,7 @@ import 'screens/users/edit_user_screen.dart';
 import 'services/auth_service.dart';
 import 'services/user_service.dart';
 import 'services/navigation_service.dart'; // Ajoutez cet import
+import 'utils/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,9 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
-        Provider(create: (_) => UserService()),
+        ProxyProvider<AuthService, UserService>(
+          update: (_, authService, __) => UserService(authService),
+        ),
       ],
       child: MyApp(initialToken: token),
     ),
@@ -38,23 +41,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Admin Dashboard',
+      title: 'Stocking Billing App',
       debugShowCheckedModeBanner: false,
-      navigatorKey: NavigationService.navigatorKey, // Utilisez la clé de navigation
+      navigatorKey: NavigationService.navigatorKey,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: '/splash',
-      routes: {
-        '/splash': (context) => const SplashScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/users': (context) => const UserListScreen(),
-        '/users/create': (context) => const CreateUserScreen(),
-        '/users/detail': (context) => UserDetailScreen(user: ModalRoute.of(context)!.settings.arguments as User),
-        '/users/edit': (context) => EditUserScreen(user: ModalRoute.of(context)!.settings.arguments as User),
-      },
+      initialRoute: AppRoutes.login,
+      onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 }

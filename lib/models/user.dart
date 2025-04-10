@@ -23,19 +23,19 @@ class User {
     required this.createdAt,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      firstName: json['first_name'],
-      lastName: json['last_name'],
-      email: json['email'],
-      role: json['role'],
-      idCardNumber: json['id_card_number'],
-      birthDate: DateTime.parse(json['birth_date']),
-      isActive: json['is_active'],
-      createdAt: DateTime.parse(json['created_at']),
-    );
-  }
+factory User.fromJson(Map<String, dynamic> json) {
+  return User(
+    id: json['id'],
+    firstName: json['first_name'] ?? '', // Valeur par défaut si null
+    lastName: json['last_name'] ?? '',
+    email: json['email'] ?? '',
+    role: json['role'] ?? 'user',
+    idCardNumber: json['id_card_number'], // Peut être null
+    birthDate: DateTime.parse(json['birth_date']),
+    isActive: json['is_active'] ?? true,
+    createdAt: DateTime.parse(json['created_at']),
+  );
+}
 
 Map<String, dynamic> toJson() {
   return {

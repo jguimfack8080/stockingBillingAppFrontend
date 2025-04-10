@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
+import '../utils/routes.dart';
 import 'navigation_service.dart';
 
 class AuthService with ChangeNotifier {
@@ -58,7 +59,20 @@ class AuthService with ChangeNotifier {
 
         await _saveTokenToStorage(_token!);
         
-        NavigationService.replaceWith('/home');
+        // Navigation vers le bon tableau de bord selon le rôle
+        switch (_currentUser!.role.toLowerCase()) {
+          case 'admin':
+            NavigationService.replaceWith('/admin-dashboard', arguments: _currentUser);
+            break;
+          case 'manager':
+            NavigationService.replaceWith('/manager-dashboard', arguments: _currentUser);
+            break;
+          case 'cashier':
+            NavigationService.replaceWith('/cashier-dashboard', arguments: _currentUser);
+            break;
+          default:
+            NavigationService.replaceWith('/home', arguments: _currentUser);
+        }
       } else {
         throw _handleLoginError(response);
       }
@@ -180,10 +194,9 @@ class AuthService with ChangeNotifier {
       _token = null;
       _currentUser = null;
       
-      NavigationService.replaceWith('/login');
+      NavigationService.navigateAndRemoveUntil(AppRoutes.login);
     } catch (e) {
-      log('Logout error: $e');
-      throw 'Erreur technique lors de la déconnexion';
+      log('Logout error: $e', stackTrace: StackTrace.current);
     } finally {
       _isLoading = false;
       notifyListeners();
