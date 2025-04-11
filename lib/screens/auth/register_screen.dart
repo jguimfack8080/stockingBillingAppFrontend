@@ -196,3 +196,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 }
+

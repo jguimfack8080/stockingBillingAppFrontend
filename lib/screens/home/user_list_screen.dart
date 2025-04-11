@@ -57,17 +57,17 @@ class _UserListScreenState extends State<UserListScreen> {
     try {
       final userService = Provider.of<UserService>(context, listen: false);
       final users = await userService.getAllUsers();
-      setState(() {
-        _users = users;
+        setState(() {
+          _users = users;
         _filteredUsers = users;
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();
-        _isLoading = false;
-      });
-    }
+          _isLoading = false;
+        });
+      }
   }
 
   Future<void> _handleDeactivateUser(User user) async {
@@ -88,7 +88,7 @@ class _UserListScreenState extends State<UserListScreen> {
           const SnackBar(content: Text('Utilisateur réactivé avec succès')),
         );
         _loadUsers();
-      } catch (e) {
+    } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Erreur lors de la réactivation: $e')),
         );
@@ -174,7 +174,7 @@ class _UserListScreenState extends State<UserListScreen> {
           ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
                 : _errorMessage != null
                     ? Center(
                         child: Column(
@@ -197,11 +197,11 @@ class _UserListScreenState extends State<UserListScreen> {
                         ? const Center(
                             child: Text('Aucun utilisateur trouvé'),
                           )
-                        : RefreshIndicator(
-                            onRefresh: _loadUsers,
-                            child: ListView.builder(
+          : RefreshIndicator(
+              onRefresh: _loadUsers,
+              child: ListView.builder(
                               itemCount: _filteredUsers.length,
-                              itemBuilder: (context, index) {
+                itemBuilder: (context, index) {
                                 final user = _filteredUsers[index];
                                 return Card(
                                   margin: const EdgeInsets.symmetric(
@@ -336,16 +336,16 @@ class _UserListScreenState extends State<UserListScreen> {
                                     ),
                                     onTap: () {
                                       Navigator.push(
-                                        context,
+                        context,
                                         MaterialPageRoute(
                                           builder: (context) => UserDetailScreen(user: user),
                                         ),
-                                      );
-                                    },
+                      );
+                    },
                                   ),
-                                );
-                              },
-                            ),
+                  );
+                },
+              ),
                           ),
           ),
         ],
@@ -364,7 +364,7 @@ class _UserListScreenState extends State<UserListScreen> {
           });
         },
         child: const Icon(Icons.add),
-      ),
+            ),
     );
   }
 
